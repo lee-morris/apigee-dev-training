@@ -68,7 +68,7 @@
                     <Name>AssignMessage.GenerateAccessTokenImplicit</Name>
                 </Step>
             </Response>        
-            <Condition>request.verb = "GET" AND proxy.pathsuffix = "/implicit"</Condition>
+            <Condition>request.verb = "POST" AND proxy.pathsuffix = "/implicit"</Condition>
         </Flow>
         <Flow name="resourceNotFound">
             <Request>

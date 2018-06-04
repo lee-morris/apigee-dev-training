@@ -5,8 +5,9 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const request = require('request-promise');
 
-const CLIENT_ID = '';
-const CLIENT_SECRET = '';
+const CLIENT_ID = 'D5t6vfqOkYizuRVgNZ8O2gcPeQQbz1HG';
+const CLIENT_SECRET = 'bHrcg4VDPi3MN8k4';
+const BASE_URL = 'https://apigeetraining2018-eval-test.apigee.net/identity/v1';
 
 let accessToken;
 let expiryTime;
@@ -28,7 +29,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 const refreshAccessToken = () => {
     if(!accessToken || expiryTime < (new Date()).getTime()) {
         return request.post({
-            uri: 'https://apigeetraining2018-eval-test.apigee.net/identity/v1/token',
+            uri: BASE_URL + '/token',
             auth: {
                 user: CLIENT_ID,
                 pass: CLIENT_SECRET
@@ -55,7 +56,7 @@ app.get('/authorize', (req, res) => {
     }
     refreshAccessToken().then(accessToken => {
         return request.post({
-            uri: 'https://apigeetraining2018-eval-test.apigee.net/identity/v1/validate',
+            uri: BASE_URL + '/validate',
             body: body,
             auth: {
                 bearer: accessToken
@@ -85,23 +86,23 @@ app.post('/consent', (req, res) => {
             res.redirect(req.body.redirect_uri + "#error=access_denied");
         } else {
             refreshAccessToken().then(accessToken => {
-                let qs = {
+                let form = {
                     response_type: 'token',
                     client_id: req.body.client_id
                 }
                 if(req.body.scope) {
-                    qs.scope = req.body.scope.join(' ')
+                    form.scope = req.body.scope.join(' ');
                 } 
-                return request.get({
-                    uri: 'https://apigeetraining2018-eval-test.apigee.net/identity/v1/implicit',
-                    qs: qs,
+                return request.post({
+                    uri: BASE_URL + '/implicit',
+                    form: form,
                     auth: {
                         bearer: accessToken
                     },
                     json: true
                 });
             }).then(result => {
-                res.redirect(req.body.redirect_uri + '#access_token=' + result.access_token + '&token_type=' + result.token_type + '&expires_in=' + result.expires_in + '&state=' + req.body.state);
+                res.redirect(req.body.redirect_uri + '#access_token=' + result.access_token + '&token_type=' + result.token_type + '&expires_in=' + result.expires_in + '&scope=' + req.body.scope + '&state=' + req.body.state);
             }).catch(error => {
                 res.redirect(req.body.redirect_uri + '#error=server_error');
             });
