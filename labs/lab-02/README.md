@@ -53,7 +53,7 @@ We will take as starting point the solution of Lab 01.
         </AssignVariable>
       </AssignMessage>
 
-* Add the following DefaultFaultRule in the API ProxyEndpoint and TargetEndpoint:
+* Add the following DefaultFaultRule inside <ProxyEndpoint> element in the ProxyEndpoint:
 
       <DefaultFaultRule>
           <AlwaysEnforce>true</AlwaysEnforce>
@@ -72,18 +72,7 @@ If we leave things as they are, we will get an 500 Internal Server Error, each t
 
 In our example, we will have to add a new FaultRule in case the API key supplied in the request is missing or invalid. In this fault rule we will be assigning the values of the variables required to build the error response accordingly. 
 
-* FaultRule
-
-        <FaultRules>
-            <FaultRule name="Unauthorized">
-                <Step>
-                    <Name>AssignMessage.Error.Unauthorized</Name>
-                </Step>
-                <Condition>fault.name = "InvalidApiKey" OR fault.name = "FailedToResolveAPIKey"</Condition>
-            </FaultRule>
-        </FaultRules>
-
-* AssignMessage policy
+* FaultRule (Inside the <ProxyEndpoint> element in the ProxyEndpoint)
 
       <AssignMessage async="false" continueOnError="false" enabled="true" name="AssignMessage.Error.Unauthorized">
         <AssignVariable>
@@ -103,6 +92,17 @@ In our example, we will have to add a new FaultRule in case the API key supplied
           <Value>http://documentation</Value>
         </AssignVariable>
       </AssignMessage>
+
+* AssignMessage policy
+
+        <FaultRules>
+            <FaultRule name="Unauthorized">
+                <Step>
+                    <Name>AssignMessage.Error.Unauthorized</Name>
+                </Step>
+                <Condition>fault.name = "InvalidApiKey" OR fault.name = "FailedToResolveAPIKey"</Condition>
+            </FaultRule>
+        </FaultRules>
 
 ### Raising errors
 
