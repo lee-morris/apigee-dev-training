@@ -53,7 +53,7 @@ We will take as starting point the solution of Lab 01.
         </AssignVariable>
       </AssignMessage>
 
-* Add the following DefaultFaultRule inside <ProxyEndpoint> element in the ProxyEndpoint:
+* Add the following DefaultFaultRule inside &lt;ProxyEndpoint&gt; element in the ProxyEndpoint:
 
       <DefaultFaultRule>
           <AlwaysEnforce>true</AlwaysEnforce>
@@ -72,7 +72,7 @@ If we leave things as they are, we will get an 500 Internal Server Error, each t
 
 In our example, we will have to add a new FaultRule in case the API key supplied in the request is missing or invalid. In this fault rule we will be assigning the values of the variables required to build the error response accordingly. 
 
-* FaultRule (Inside the <ProxyEndpoint> element in the ProxyEndpoint)
+* FaultRule (Inside the &lt;ProxyEndpoint&gt; element in the ProxyEndpoint)
 
       <AssignMessage async="false" continueOnError="false" enabled="true" name="AssignMessage.Error.Unauthorized">
         <AssignVariable>
